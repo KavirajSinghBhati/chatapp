@@ -25,6 +25,10 @@ const SignIn = () => {
     signInWithProvider(new firebase.auth.GoogleAuthProvider());
   };
 
+  const onGithubSignIn = () => {
+    signInWithProvider(new firebase.auth.GithubAuthProvider());
+  };
+
   return (
     <Container>
       <Grid className="mt-page">
@@ -39,6 +43,9 @@ const SignIn = () => {
               <div className="mt-3">
                 <Button block color="green" onClick={onGoogleSignIn}>
                   <Icon icon="google" /> Continue with Google
+                </Button>
+                <Button block onClick={onGithubSignIn}>
+                  <Icon icon="github" /> Continue with Github
                 </Button>
               </div>
             </Panel>

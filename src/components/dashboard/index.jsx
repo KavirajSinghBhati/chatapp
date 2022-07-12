@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Divider, Drawer } from "rsuite";
 import EditableInput from "../EditableInput";
+import ProviderBlock from "../ProviderBlock";
 
 import { useProfile } from "../../context/profile.context";
 
@@ -16,6 +17,7 @@ const Dashboard = ({ onSignOut }) => {
       </Drawer.Header>
       <Drawer.Body>
         <h3>Hey, {profile.name}</h3>
+        <ProviderBlock />
         <Divider />
         <EditableInput
           name="nickname"
