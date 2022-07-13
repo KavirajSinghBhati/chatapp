@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
+import "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDdDBpFyIysb29i-G-bxIc4nNTArd3svzg",
@@ -18,3 +19,4 @@ const app = firebase.initializeApp(firebaseConfig);
 export const auth = app.auth();
 export const database = app.database();
 export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+export const storage = firebase.storage();
