@@ -5,3 +5,11 @@ export function getNameInitials(name) {
   }
   return splitName[0][0];
 }
+
+export function transformToArrayWithId(snapshot) {
+  return snapshot
+    ? Object.keys(snapshot).map(roomId => {
+        return { ...snapshot[roomId], id: roomId };
+      })
+    : [];
+}
