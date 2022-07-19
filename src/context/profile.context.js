@@ -1,6 +1,17 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useContext } from "react";
 import { auth, database } from "../misc/firebase.config";
+import firebase from "firebase/app";
+
+export const isOfflineForDatabase = {
+  state: "offline",
+  last_changed: firebase.database.ServerValue.TIMESTAMP,
+};
+
+const isOnlineForDatabase = {
+  state: "online",
+  last_changed: firebase.database.ServerValue.TIMESTAMP,
+};
 
 const ProfileContext = createContext();
 
@@ -10,11 +21,16 @@ export const ProfileProvider = ({ children }) => {
 
   useEffect(() => {
     let userRef;
-    const authUnSub = auth.onAuthStateChanged(authObj => {
+    let userStatusRef;
+
+    const authUnsub = auth.onAuthStateChanged(authObj => {
       if (authObj) {
+        userStatusRef = database.ref(`/status/${authObj.uid}`);
         userRef = database.ref(`/profiles/${authObj.uid}`);
-        userRef.on("value", snapshot => {
-          const { name, createdAt, avatar } = snapshot.val();
+
+        userRef.on("value", snap => {
+          const { name, createdAt, avatar } = snap.val();
+
           const data = {
             name,
             createdAt,
@@ -22,21 +38,50 @@ export const ProfileProvider = ({ children }) => {
             uid: authObj.uid,
             email: authObj.email,
           };
+
           setProfile(data);
           setIsLoading(false);
+        });
+
+        database.ref(".info/connected").on("value", snapshot => {
+          if (snapshot.val() === false) {
+            return;
+          }
+
+          userStatusRef
+            .onDisconnect()
+            .set(isOfflineForDatabase)
+            .then(() => {
+              userStatusRef.set(isOnlineForDatabase);
+            });
         });
       } else {
         if (userRef) {
           userRef.off();
         }
+
+        if (userStatusRef) {
+          userStatusRef.off();
+        }
+
+        database.ref(".info/connected").off();
+
         setProfile(null);
         setIsLoading(false);
       }
     });
+
     return () => {
-      authUnSub();
+      authUnsub();
+
+      database.ref(".info/connected").off();
+
       if (userRef) {
         userRef.off();
+      }
+
+      if (userStatusRef) {
+        userStatusRef.off();
       }
     };
   }, []);
