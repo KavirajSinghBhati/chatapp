@@ -6,17 +6,19 @@ import AvatarUploadButton from "./AvatarUploadButton";
 
 import { useProfile } from "../../context/profile.context";
 import { database } from "../../misc/firebase.config";
+import { getUserUpdates } from "../../misc/helper";
 
 const Dashboard = ({ onSignOut }) => {
   const { profile } = useProfile();
   const onSave = async newData => {
-    const userNicknameRef = database
-      .ref(`/profiles/${profile.uid}`)
-      .child("name");
-
     try {
-      await userNicknameRef.set(newData);
-
+      const updates = await getUserUpdates(
+        profile.uid,
+        "name",
+        newData,
+        database
+      );
+      await database.ref().update(updates);
       Alert.success("Nickname has been updated", 4000);
     } catch (err) {
       Alert.error(err.message, 4000);
