@@ -37,3 +37,7 @@ export async function getUserUpdates(userId, keyToUpdate, value, db) {
 
   return updates;
 }
+
+export function transformToArr(snapshot) {
+  return snapshot ? Object.keys(snapshot) : [];
+}
