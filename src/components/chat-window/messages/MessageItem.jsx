@@ -3,6 +3,7 @@ import TimeAgo from "timeago-react";
 import ProfileAvatar from "../../dashboard/ProfileAvatar";
 import ProfileInfoBtnModal from "./ProfileInfoBtnModal";
 import PresenceDot from "../../PresenceDot";
+import IconBtnControl from "./IconBtnControl";
 import { Button } from "rsuite";
 import { auth } from "../../../misc/firebase.config";
 import { useCurrentRoom } from "../../../context/current-room.context";
@@ -45,13 +46,21 @@ const MessageItem = ({ message, handleAdmin }) => {
             </Button>
           )}
         </ProfileInfoBtnModal>
-      </div>
-      <div>
-        <span className="word-break-all">{text}</span>
         <TimeAgo
           datetime={createdAt}
           className="font-normal text-black-45 ml-2"
         />
+        <IconBtnControl
+          {...(true ? { color: "red" } : {})}
+          isVisible
+          iconName="heart"
+          tooltip="Like this message"
+          onClick={() => {}}
+          badgeContent={5}
+        />
+      </div>
+      <div>
+        <span className="word-break-all">{text}</span>
       </div>
     </li>
   );
